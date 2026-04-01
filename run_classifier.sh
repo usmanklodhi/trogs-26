@@ -77,8 +77,7 @@ export POLARS_SKIP_CPU_CHECK=1
 # cd /home/hpc/iwi5/iwi5340h/trogs-26  # Uncomment if needed
 
 echo "----- Starting Classifier Training -----"
-# src/train_classifer_v2.py
-python src/train_classifier_v3_additions.py
+python src/train_classifier.py
 echo "----- Training finished -----"
 
 echo "========== Job ended: $(date) =========="

@@ -73,7 +73,7 @@ export POLARS_SKIP_CPU_CHECK=1
 # cd /home/hpc/iwi5/iwi5340h/trogs-26
 
 echo "----- Starting training -----"
-python src/train.py
+python src/train_detector.py
 echo "----- Training finished -----"
 
 echo "========== Job ended: $(date) =========="

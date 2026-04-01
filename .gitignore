@@ -1,6 +1,7 @@
 data/processed
 data/raw/Annotations
 data/raw/Images
+data/raw/Test PNG Images
 notebooks/trogs_mock
 data/raw/test_fullsized_images
 # tbd
@@ -9,3 +10,5 @@ models
 runs
 *.zip
 *.pt
+results
+.ipynb_checkpoints

@@ -19,7 +19,8 @@ CLS_MODEL_PATH = '../models/greek_classifier_resnet18_20260214_212940.pth'
 TRAIN_DIR = '../data/processed/greek_letters_classification/train'
 PROXIMITY_THRESHOLD = 50 
 
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+DEVICE = torch.device("cpu")
 
 def load_pipeline():
     print(f"Initializing models on {DEVICE}...")
@@ -66,7 +67,7 @@ def run_tournament(img1_path, img2_path, detector, classifier, transforms, class
 
     final_results = []
     
-    print("Running Proximity Matching & Classification...")
+    print("Running Proximity Matching & Logit Averaging Fusion...")
     for b1 in boxes1:
         x1_min, y1_min, x1_max, y1_max = map(int, b1.bbox.to_xyxy())
         cx1, cy1 = (x1_min + x1_max) / 2, (y1_min + y1_max) / 2
@@ -104,13 +105,15 @@ def run_tournament(img1_path, img2_path, detector, classifier, transforms, class
             
             with torch.no_grad():
                 out1, out2 = classifier(t1), classifier(t2)
-                conf1, p1 = torch.max(F.softmax(out1, dim=1), 1)
-                conf2, p2 = torch.max(F.softmax(out2, dim=1), 1)
                 
-            c1, c2 = conf1.item(), conf2.item()
-            best_label = class_names[p1.item()] if c1 >= c2 else class_names[p2.item()]
-            best_conf = c1 if c1 >= c2 else c2
-            
+                # --- LOGIT AVERAGING (LATE FUSION) ---
+                avg_logits = (out1 + out2) / 2.0
+                avg_probs = F.softmax(avg_logits, dim=1)
+                best_conf_tensor, best_p_tensor = torch.max(avg_probs, 1)
+                
+                best_label = class_names[best_p_tensor.item()]
+                best_conf = best_conf_tensor.item()
+                
             final_results.append({
                 'x1': x1_min, 'y1': y1_min, 'x2': x1_max, 'y2': y1_max, 
                 'label': best_label, 'conf': best_conf
@@ -179,7 +182,6 @@ def reconstruct_transcript(results):
 
     unassociated = set(range(len(results)))
     candidate_rows = []
-    
     # Lines are constructed greedily by selecting a previously unassociated box as a seed [cite: 248]
     while unassociated:
         seed_id = unassociated.pop()
@@ -230,34 +232,69 @@ def reconstruct_transcript(results):
     
     return "\n".join("".join([b['label'] for b in row]) for row in candidate_rows)
 
+
 # ==========================================
-# 4. MAIN EXECUTION
+# 4. VISUALIZATION UTILITY
+# ==========================================
+def save_visualization(image_path, boxes, output_path):
+    print(f"Generating visualization at {output_path}...")
+    img = cv2.imread(image_path)
+    
+    for b in boxes:
+        x1, y1, x2, y2 = b['x1'], b['y1'], b['x2'], b['y2']
+        label = b['label']
+        conf = b['conf']
+        
+        # Draw bounding box
+        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        
+        # Prepare text label (e.g., "Alpha 0.95")
+        text = f"{label} {conf:.2f}"
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        font_scale = 0.5
+        thickness = 1
+        
+        # Get text dimensions for the background box
+        (text_width, text_height), baseline = cv2.getTextSize(text, font, font_scale, thickness)
+        
+        # Draw a solid background rectangle for the text to ensure it's readable over the stone texture
+        cv2.rectangle(img, (x1, y1 - text_height - 10), (x1 + text_width, y1), (0, 255, 0), -1)
+        
+        # Draw the text in black over the green background
+        cv2.putText(img, text, (x1, y1 - 5), font, font_scale, (0, 0, 0), thickness)
+        
+    cv2.imwrite(output_path, img)
+
+# ==========================================
+# 5. MAIN EXECUTION
 # ==========================================
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Greek Squeeze Pipeline")
     parser.add_argument("--img1", required=True, help="Path to Rotation 1 image")
     parser.add_argument("--img2", required=True, help="Path to Rotation 2 image")
     parser.add_argument("--out", required=True, help="Path to save the output .txt file")
+    parser.add_argument("--vis_out", required=False, help="Optional: Path to save the visualized output image (.png/.jpg)")
     args = parser.parse_args()
 
     # Load resources
     detector, classifier, transforms, class_names = load_pipeline()
     
-    # Run inferences
+    # Run inferences (with logit averaging)
     boxes = run_tournament(args.img1, args.img2, detector, classifier, transforms, class_names)
     
     # Reconstruct text
     transcript = reconstruct_transcript(boxes)
+
+    out_dir = os.path.dirname(args.out)
+    if out_dir: os.makedirs(out_dir, exist_ok=True)
     
-    # Save to file
+    # Save text to file
     with open(args.out, 'w', encoding='utf-8') as f:
         f.write(transcript)
         
     print(f"Pipeline complete. Transcript saved to {args.out}")
-
-
-# python run_pipeline.py \
-#     --img1 data/test/Test_01_Rot1.png \
-#     --img2 data/test/Test_01_Rot2.png \
-#     --out results/Test_01_Transcript.txt
-
+    
+    # Generate visualization if requested
+    if args.vis_out:
+        save_visualization(args.img1, boxes, args.vis_out)
+        print(f"Visualized image saved to {args.vis_out}")
