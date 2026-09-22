@@ -5,7 +5,6 @@ data/raw/Test PNG Images
 notebooks/trogs_mock
 data/raw/test_fullsized_images
 # tbd
-<<<<<<< Updated upstream
 logs
 models
 runs
@@ -13,8 +12,9 @@ runs
 *.pt
 results
 .ipynb_checkpoints
-=======
 
 *.zip
 data/
->>>>>>> Stashed changes
+*.png
+
+outputs

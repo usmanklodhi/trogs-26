@@ -56,14 +56,21 @@ def run_tournament(img1_path, img2_path, detector, classifier, transforms, class
     res1 = get_sliced_prediction(img1_path, detector, slice_height=640, slice_width=640, overlap_height_ratio=0.2, overlap_width_ratio=0.2, postprocess_type="NMS")
     boxes1 = res1.object_prediction_list
 
-    print("Running detection on Image 2...")
-    res2 = get_sliced_prediction(img2_path, detector, slice_height=640, slice_width=640, overlap_height_ratio=0.2, overlap_width_ratio=0.2, postprocess_type="NMS")
-    boxes2 = res2.object_prediction_list
-
     img1_cv2 = cv2.imread(img1_path)
-    img2_cv2 = cv2.imread(img2_path)
     h1, w1, _ = img1_cv2.shape
-    h2, w2, _ = img2_cv2.shape
+
+    if img2_path is None:
+        print("No Image 2 provided, processing single image...")
+        boxes2 = []
+        img2_cv2 = None
+        h2 = w2 = 0
+    else:
+        print("Running detection on Image 2...")
+        res2 = get_sliced_prediction(img2_path, detector, slice_height=640, slice_width=640, overlap_height_ratio=0.2, overlap_width_ratio=0.2, postprocess_type="NMS")
+        boxes2 = res2.object_prediction_list
+
+        img2_cv2 = cv2.imread(img2_path)
+        h2, w2, _ = img2_cv2.shape
 
     final_results = []
     
@@ -271,7 +278,7 @@ def save_visualization(image_path, boxes, output_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Greek Squeeze Pipeline")
     parser.add_argument("--img1", required=True, help="Path to Rotation 1 image")
-    parser.add_argument("--img2", required=True, help="Path to Rotation 2 image")
+    parser.add_argument("--img2", required=False, default=None, help="Path to Rotation 2 image (optional)")
     parser.add_argument("--out", required=True, help="Path to save the output .txt file")
     parser.add_argument("--vis_out", required=False, help="Optional: Path to save the visualized output image (.png/.jpg)")
     args = parser.parse_args()
