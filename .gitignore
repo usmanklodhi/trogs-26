@@ -7,12 +7,12 @@ data/raw/*
 !data/raw/proxies.pdf
 !data/raw/*_set.txt
 
-# Training / inference outputs
-runs/
-models/
-logs/
-results/
-outputs/
+# Training / inference outputs (anchored to the repo root, so src/trogs/models/ is not ignored)
+/runs/
+/models/
+/logs/
+/results/
+/outputs/
 *.pt
 *.pth
 *.zip
