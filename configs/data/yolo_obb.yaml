@@ -1,0 +1,10 @@
+# Tiled YOLO-OBB letter detection dataset.
+img_dir: data/raw/Images
+ann_dir: data/raw/Annotations
+output_dir: data/processed/greek_letters_obb
+tile_size: 640
+stride: 512               # 128 px overlap between tiles
+ioa_threshold: 0.7        # keep a box if >= 70% of it lies inside the tile
+split_ratio: 0.9
+annotation_glob: "*_Rotation1_300dpi_letters.txt"
+seed: null

@@ -1,0 +1,12 @@
+# Pathway 1 batch preset, as used for the reported test-set results.
+detector_weights: runs/obb/train3/weights/best.pt
+classifier_weights: models/greek_classifier_resnet18_20260214_212940.pth
+class_dir: data/processed/greek_letters_classification/train
+confidence: 0.50
+proximity_threshold: 50
+slice_size: 640
+overlap_ratio: 0.2
+img_size: 128
+device: auto
+input_dir: data/raw/Images
+results_dir: results

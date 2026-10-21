@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trogs"
+version = "1.0.0"
+description = "Transcription of Greek inscription squeezes: YOLO-OBB letter detection with ResNet18 classification or CRNN line recognition."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Usman Lodhi" }]
+dependencies = [
+    "torch>=2.6",
+    "torchvision>=0.21",
+    "ultralytics>=8.4",
+    "sahi>=0.11.36",
+    "opencv-python>=4.11",
+    "numpy>=2.2",
+    "pandas>=2.3",
+    "shapely>=2.1",
+    "Levenshtein>=0.27",
+    "scikit-learn>=1.7",
+    "matplotlib>=3.10",
+    "seaborn>=0.13",
+    "tqdm>=4.67",
+    "PyYAML>=6.0",
+    "Pillow>=12.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+notebooks = ["jupyter", "ipykernel"]
+
+[project.scripts]
+trogs = "trogs.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+src = ["src", "tests"]
+extend-exclude = ["data", "notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501"]

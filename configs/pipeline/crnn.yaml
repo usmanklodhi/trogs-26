@@ -1,0 +1,12 @@
+# Pathway 2: YOLO-OBB detection + line grouping + CRNN.
+detector_weights: runs/obb/train3/weights/best.pt
+crnn_weights: models/crnn_greek_20260420_155707_best.pth
+vocab_file: data/processed/crnn_training_data/labels.txt   # rebuilds the character map
+confidence: 0.25
+slice_size: 640
+overlap_ratio: 0.2
+target_h: 32
+device: auto
+input_dir: data/raw/Images
+output_dir: outputs/crnn/batch_transcripts
+vis_dir: outputs/crnn/batch_visualizations

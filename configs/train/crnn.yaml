@@ -1,0 +1,10 @@
+data_dir: data/processed/crnn_training_data
+output_dir: models
+log_dir: logs
+split_ratio: 0.85
+batch_size: 32
+epochs: 30
+lr: 0.001
+num_workers: 4
+device: auto
+seed: null
