@@ -1,0 +1,16 @@
+model: yolo11n-obb.pt
+data: configs/yolo_dataset.yaml
+epochs: 100
+imgsz: 640
+batch: 16
+# Geometric augmentation (no flips: letters are not symmetric)
+degrees: 15.0
+fliplr: 0.0
+flipud: 0.0
+scale: 0.5
+shear: 2.0
+# Photometric augmentation (strong brightness shift for light/dark stone)
+hsv_h: 0.015
+hsv_s: 0.2
+hsv_v: 0.5
+amp: false

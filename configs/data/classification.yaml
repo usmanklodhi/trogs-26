@@ -1,0 +1,10 @@
+# Glyph classification dataset, stretched crops (used by the 20260214 classifier).
+img_dir: data/raw/Images
+ann_dir: data/raw/Annotations
+output_dir: data/processed/greek_letters_classification
+crop_mode: stretch        # rectify the box and resize to img_size
+img_size: 128
+split_ratio: 0.8          # by squeeze, not by letter
+annotation_glob: "*_Rotation1_300dpi_letters.txt"
+clean_output: false
+seed: null                # null = unseeded shuffle, as in the thesis runs

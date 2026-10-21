@@ -1,0 +1,7 @@
+# `trogs evaluate compare`: point the prediction dirs at the batch runs to compare.
+test_set: data/raw/test_set.txt
+gt_dir: data/raw/Annotations
+crnn_pred_dir: outputs/crnn/batch_transcripts
+crnn_diagnostics: outputs/crnn/batch_transcripts/batch_diagnostics.tsv
+classifier_pred_dir: results/batch_run_20260514_163624
+classifier_diagnostics: results/batch_run_20260514_163624/diagnostics.txt

@@ -1,0 +1,7 @@
+# CRNN line dataset (both rotations are used).
+img_dir: data/raw/Images
+ann_dir: data/raw/Annotations
+output_dir: data/processed/crnn_training_data
+annotation_glob: "*_letters.txt"
+target_h: 32
+seed: null

@@ -1,0 +1,7 @@
+# Ultralytics dataset file for the tiled letter detection data (see `trogs prepare yolo`).
+# A relative `path` is resolved against the working directory (the repository root).
+path: data/processed/greek_letters_obb
+train: images/train
+val: images/val
+names:
+  0: letter

@@ -1,20 +1,32 @@
-data/processed
-data/raw/Annotations
-data/raw/Images
-data/raw/Test PNG Images
-notebooks/trogs_mock
-data/raw/test_fullsized_images
-# tbd
-logs
-models
-runs
-*.zip
+# Data: everything under data/ is local, except the dataset metadata in data/raw
+data/*
+!data/raw/
+data/raw/*
+!data/raw/README.txt
+!data/raw/make_xml.py
+!data/raw/proxies.pdf
+!data/raw/*_set.txt
+
+# Training / inference outputs
+runs/
+models/
+logs/
+results/
+outputs/
 *.pt
-results
-.ipynb_checkpoints
-
+*.pth
 *.zip
-data/
-*.png
 
-outputs
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/

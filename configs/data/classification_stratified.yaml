@@ -1,0 +1,10 @@
+# Glyph classification dataset, aspect-preserving square crops (used by the v4 classifier).
+img_dir: data/raw/Images
+ann_dir: data/raw/Annotations
+output_dir: data/processed/greek_letters_classification_stratified
+crop_mode: square         # grow the box to a square around its centre before warping
+img_size: 128
+split_ratio: 0.8
+annotation_glob: "*_Rotation1_300dpi_letters.txt"
+clean_output: true
+seed: null
